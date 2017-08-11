@@ -1,0 +1,5 @@
+#-*- coding:gbk -*-
+__author__ = "sun wang"
+
+s = "Äã¹þ"
+print(s.encode("gbk"))
