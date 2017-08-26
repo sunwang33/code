@@ -1,3 +1,5 @@
+系统环境：centos7
+docker版本：1.12.6
 #查看镜像
 docker images
 #删除镜像
@@ -116,6 +118,27 @@ docker rm -f 容器ID
         #把镜像存储文件导入为镜像
         docker load < ubuntu_14.04.tar
         docker load  --input   ubuntu_14.04.tar
+#仓库（集中存放镜像的地方）
+    #Docker Hub
+        #登陆
+        docker login
+        #搜索镜像
+        docker search 关键词
+    #创建和使用私有仓库
+        #使用registry镜像创建私有仓库
+            #拉取registry镜像
+            docker pull registry
+            #将仓库创建在容器的/tmp/registry目录下，可以通过-v参数来将镜像文件存放在本地的指定路径上。
+            eg:将上传的镜像放到/opt/data/registry
+            docker run -d -p 5000:5000 -v /opt/data/registry:/tmp/registry registry
+            #进入registry容器查看IP(registry容器不支持bash了）
+            docker exec -it 997 sh
+            #将一个镜像传入新建私有仓库
+            docker push 192.168.137.152:5000/ubuntu #192.168.137.152是宿主机IP
+            #用curl命令查看仓库中的镜像
+            curl 192.168.137.152:5000/v2/_catalog
+
+
 
 
 
