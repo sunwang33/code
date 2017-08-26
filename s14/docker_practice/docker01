@@ -37,7 +37,7 @@ docker ps  -a
 docker commit -m "Added a new file" -a "Docker Newbee" 67a test:latest
 #存出镜像到本地文件
 docker save -o ubuntu_14.04.tar ubuntu:14.04
-#查看容器的运行状态。
+#查看容器的输出信息。
 docker logs 087
 #删除容器。
 docker rm -f 087
@@ -51,5 +51,42 @@ docker pull user/test:latest
 #推送镜像
 docker push user/test:latest
 docker push sunwang33/first_re:latest
-#新建容器
+#新建容器（docker create命令创建的容器处于停止状态。）
 docker create -it ubuntu:latest
+#使用docker start命令启动处于停止状态的容器。
+docker start 容器ID
+#创建容器并运行一条命令后容器自动终止
+docker run ubuntu /bin/echo 'hello world'
+#启动一个bash终端，与用户进行交互。
+#-i选项让容器的标准输入保持打开
+#-t选项让docker分配一个伪装端并绑定到容器的标准输入上。
+#使用ps查看进程发现只运行了bash应用。
+docker  run -it  ubuntu /bin/bash
+#退出容器
+#退出容器后，该容器自动处于终止状态。
+exit或Ctrl+d
+#使用-d选项让容器在后台以守护态运行
+docker run -itd ubuntu /bin/bash -c "while :;do echo hello world;sleep 1 ;done"
+#查看容器输出信息
+docker logs  容器ID
+#终止容器
+docker stop 容器ID
+#强行终止容器
+docker kill 容器ID
+#查看终止状态的容器
+docker ps -a -q
+#启动处于终止状态的容器
+docker start  容器ID
+#将一个运行态的容器终止，并重新启动
+docker  restart 容器ID
+#进入容器
+#attach命令
+eg:
+    #新建一个容器
+    docker run -itd ubuntu
+    #进入这个容器
+    docker attach 容器ID
+    #当多个窗口同时attach到同一个容器的时候，所有窗口会同步显示。当某个窗口阻塞了，其他窗口也无法操作了。
+#exec命令（可以直接在容器内部运行命令）
+docker exec -it ubuntu  /bin/bash
+
