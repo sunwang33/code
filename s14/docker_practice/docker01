@@ -3,8 +3,6 @@ docker images
 #删除镜像
 docker rmi centos
 docker rmi centos:6-x86_64
-#把容器文件导入为镜像
-cat centos-6-x86_64-minimal.tar.gz |docker import - centos:6-x86_64
 #启动一个镜像
 docker run -it centos:6-x86_64 /bin/bash
 #拉取镜像
@@ -88,5 +86,36 @@ eg:
     docker attach 容器ID
     #当多个窗口同时attach到同一个容器的时候，所有窗口会同步显示。当某个窗口阻塞了，其他窗口也无法操作了。
 #exec命令（可以直接在容器内部运行命令）
-docker exec -it ubuntu  /bin/bash
+docker exec -it 容器ID  /bin/bash
+#nsenter工具
+    #安装方法
+    cd /usr/local/src
+    curl https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz |tar -zxf - ;
+    cd util-linux-2.24
+    ./configure --without-ncurses
+    make nsenter && cp nsenter /usr/local/bin/
+    #查找所需容器进程的PID
+    方法一：
+    PID=$(docker inspect --format "{{ .State.Pid }}" <容器ID>)
+    #通过这个PID，去连接到这个程序
+    nsenter --target $PID --mount --uts --ipc --net --pid
+#删除容器
+docker rm 容器ID
+#-f选项可以删除一个运行中的容器
+docker rm -f 容器ID
+
+#导入和导出容器
+    #导出容器（无论容器是否运行，均可用这个命令导出。
+    docker export 容器ID
+    eg:
+    docker export e5f > ubuntu_latest.tar.gz
+    //可以将文件ubuntu_latest.tar.gz导入其他主机通过相应命令实现容器的迁移。
+    #导入容器
+        #把容器快照文件导入为镜像
+        cat centos-6-x86_64-minimal.tar.gz |docker import - centos:6-x86_64
+        #把镜像存储文件导入为镜像
+        docker load < ubuntu_14.04.tar
+        docker load  --input   ubuntu_14.04.tar
+
+
 
