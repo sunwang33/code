@@ -1,0 +1,55 @@
+#查看镜像
+docker images
+#删除镜像
+docker rmi centos
+docker rmi centos:6-x86_64
+#把容器文件导入为镜像
+cat centos-6-x86_64-minimal.tar.gz |docker import - centos:6-x86_64
+#启动一个镜像
+docker run -it centos:6-x86_64 /bin/bash
+#拉取镜像
+docker pull ubuntu   #不加tag默认是最新版的。
+docker pull ubuntu:14.04
+#从dl.dockerpool.com拉取镜像
+docker pull dl.dockerpool.com:5000/ubuntu
+#启动镜像
+docker run -it ubuntu /bin/bash
+#给镜像加一个标签
+docker tag docker.io/ubuntu:latest  ubuntu:16.04
+#查看镜像的详细信息
+docker inspect ccc7a
+#-f选项指定某个特定属性
+docker inspect -f {{".Architecture"}} 550 #550指镜像ID的前三位数
+#搜索5颗星的mysql镜像
+docker search mysql -s=5
+docker search mysql --stars=5
+#删除镜像
+docker rmi docker.io/ubuntu:latest
+#当发生冲突时，比如有容器正在运行，可以加-f去强行删除。
+docker rmi -f  c73c7527c03a
+#运行镜像创建一个简单容器并执行一条命令，可以在本机上看到执行结果。
+docker run ubuntu echo "hello world"
+#查看本机正在运行的容器
+docker ps
+#查看本机上所有容器
+docker ps  -a
+#把一个容器提交为镜像,-m选项表示提交信息，-a表示作者信息，67a表示容器信息。
+docker commit -m "Added a new file" -a "Docker Newbee" 67a test:latest
+#存出镜像到本地文件
+docker save -o ubuntu_14.04.tar ubuntu:14.04
+#查看容器的运行状态。
+docker logs 087
+#删除容器。
+docker rm -f 087
+#把容器文件导入为镜像
+docker load < ubuntu_14.04.tar
+docker load  --input   ubuntu_14.04.tar
+#登陆到dockerhub,会提示输入用户名和密码。
+docker login
+#拉取镜像，user指在dockerhub上注册的用户名
+docker pull user/test:latest
+#推送镜像
+docker push user/test:latest
+docker push sunwang33/first_re:latest
+#新建容器
+docker create -it ubuntu:latest
