@@ -1,0 +1,144 @@
+系统环境：centos7
+docker版本：1.12.6
+#查看镜像
+docker images
+#删除镜像
+docker rmi centos
+docker rmi centos:6-x86_64
+#启动一个镜像
+docker run -it centos:6-x86_64 /bin/bash
+#拉取镜像
+docker pull ubuntu   #不加tag默认是最新版的。
+docker pull ubuntu:14.04
+#从dl.dockerpool.com拉取镜像
+docker pull dl.dockerpool.com:5000/ubuntu
+#启动镜像
+docker run -it ubuntu /bin/bash
+#给镜像加一个标签
+docker tag docker.io/ubuntu:latest  ubuntu:16.04
+#查看镜像的详细信息
+docker inspect ccc7a
+#-f选项指定某个特定属性
+docker inspect -f {{".Architecture"}} 550 #550指镜像ID的前三位数
+#搜索5颗星的mysql镜像
+docker search mysql -s=5
+docker search mysql --stars=5
+#删除镜像
+docker rmi docker.io/ubuntu:latest
+#当发生冲突时，比如有容器正在运行，可以加-f去强行删除。
+docker rmi -f  c73c7527c03a
+#运行镜像创建一个简单容器并执行一条命令，可以在本机上看到执行结果。
+docker run ubuntu echo "hello world"
+#查看本机正在运行的容器
+docker ps
+#查看本机上所有容器
+docker ps  -a
+#把一个容器提交为镜像,-m选项表示提交信息，-a表示作者信息，67a表示容器信息。
+docker commit -m "Added a new file" -a "Docker Newbee" 67a test:latest
+#存出镜像到本地文件
+docker save -o ubuntu_14.04.tar ubuntu:14.04
+#查看容器的输出信息。
+docker logs 087
+#删除容器。
+docker rm -f 087
+#把容器文件导入为镜像
+docker load < ubuntu_14.04.tar
+docker load  --input   ubuntu_14.04.tar
+#登陆到dockerhub,会提示输入用户名和密码。
+docker login
+#拉取镜像，user指在dockerhub上注册的用户名
+docker pull user/test:latest
+#推送镜像
+docker push user/test:latest
+docker push sunwang33/first_re:latest
+#新建容器（docker create命令创建的容器处于停止状态。）
+docker create -it ubuntu:latest
+#使用docker start命令启动处于停止状态的容器。
+docker start 容器ID
+#创建容器并运行一条命令后容器自动终止
+docker run ubuntu /bin/echo 'hello world'
+#启动一个bash终端，与用户进行交互。
+#-i选项让容器的标准输入保持打开
+#-t选项让docker分配一个伪装端并绑定到容器的标准输入上。
+#使用ps查看进程发现只运行了bash应用。
+docker  run -it  ubuntu /bin/bash
+#退出容器
+#退出容器后，该容器自动处于终止状态。
+exit或Ctrl+d
+#使用-d选项让容器在后台以守护态运行
+docker run -itd ubuntu /bin/bash -c "while :;do echo hello world;sleep 1 ;done"
+#查看容器输出信息
+docker logs  容器ID
+#终止容器
+docker stop 容器ID
+#强行终止容器
+docker kill 容器ID
+#查看终止状态的容器
+docker ps -a -q
+#启动处于终止状态的容器
+docker start  容器ID
+#将一个运行态的容器终止，并重新启动
+docker  restart 容器ID
+#进入容器
+#attach命令
+eg:
+    #新建一个容器
+    docker run -itd ubuntu
+    #进入这个容器
+    docker attach 容器ID
+    #当多个窗口同时attach到同一个容器的时候，所有窗口会同步显示。当某个窗口阻塞了，其他窗口也无法操作了。
+#exec命令（可以直接在容器内部运行命令）
+docker exec -it 容器ID  /bin/bash
+#nsenter工具
+    #安装方法
+    cd /usr/local/src
+    curl https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz |tar -zxf - ;
+    cd util-linux-2.24
+    ./configure --without-ncurses
+    make nsenter && cp nsenter /usr/local/bin/
+    #查找所需容器进程的PID
+    方法一：
+    PID=$(docker inspect --format "{{ .State.Pid }}" <容器ID>)
+    #通过这个PID，去连接到这个程序
+    nsenter --target $PID --mount --uts --ipc --net --pid
+#删除容器
+docker rm 容器ID
+#-f选项可以删除一个运行中的容器
+docker rm -f 容器ID
+
+#导入和导出容器
+    #导出容器（无论容器是否运行，均可用这个命令导出。
+    docker export 容器ID
+    eg:
+    docker export e5f > ubuntu_latest.tar.gz
+    //可以将文件ubuntu_latest.tar.gz导入其他主机通过相应命令实现容器的迁移。
+    #导入容器
+        #把容器快照文件导入为镜像
+        cat centos-6-x86_64-minimal.tar.gz |docker import - centos:6-x86_64
+        #把镜像存储文件导入为镜像
+        docker load < ubuntu_14.04.tar
+        docker load  --input   ubuntu_14.04.tar
+#仓库（集中存放镜像的地方）
+    #Docker Hub
+        #登陆
+        docker login
+        #搜索镜像
+        docker search 关键词
+    #创建和使用私有仓库
+        #使用registry镜像创建私有仓库
+            #拉取registry镜像
+            docker pull registry
+            #将仓库创建在容器的/tmp/registry目录下，可以通过-v参数来将镜像文件存放在本地的指定路径上。
+            eg:将上传的镜像放到/opt/data/registry
+            docker run -d -p 5000:5000 -v /opt/data/registry:/tmp/registry registry
+            #进入registry容器查看IP(registry容器不支持bash了）
+            docker exec -it 997 sh
+            #将一个镜像传入新建私有仓库
+            docker push 192.168.137.152:5000/ubuntu #192.168.137.152是宿主机IP
+            #用curl命令查看仓库中的镜像
+            curl 192.168.137.152:5000/v2/_catalog
+
+
+
+
+
