@@ -1,0 +1,25 @@
+FROM centos6_1:tiger
+MAINTAINER  sunwang sunwang1101@aliyun.com
+
+#install JDK1.6
+
+ADD	jdk-6u45-linux-x64.bin  /usr/local/src
+RUN mkdir  /java
+RUN mv  /usr/local/src/jdk-6u45-linux-x64.bin   /java
+WORKDIR  /java
+RUN chmod  700  jdk-6u45-linux-x64.bin
+RUN ./jdk-6u45-linux-x64.bin
+RUN echo "###java6u45###" >> /etc/profile
+RUN echo "JAVA_HOME=/java/jdk1.6.0_45/"  >> /etc/profile
+RUN echo "JAVA_BIN=/java/jdk1.6.0_45/bin"  >> /etc/profile
+RUN echo "PATH=$PATH:$HOME/bin:$JAVA_HOME/bin"  >> /etc/profile
+RUN echo "CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar"  >> /etc/profile
+RUN echo "export JAVA_HOME JAVA_BIN PATH CLASSPATH"  >> /etc/profile
+RUN echo "###java6u45###" >> /etc/profile
+RUN source /etc/profile
+
+ENV  JAVA_HOME   /java/jdk1.6.0_45/
+ENV  JAVA_BIN    /java/jdk1.6.0_45/bin
+ENV  PATH        $PATH:$HOME/bin:$JAVA_HOME/bin
+ENV	 CLASSPATH   .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+RUN		export JAVA_HOME JAVA_BIN PATH CLASSPATH

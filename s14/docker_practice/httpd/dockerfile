@@ -1,0 +1,36 @@
+FROM centos6_1:tiger
+MAINTAINER  sunwang sunwang1101@aliyun.com
+
+RUN yum -y install pcre pcre-devel wget net-tools gcc zlib zlib-devel make openssl-devel expat-devel
+
+WORKDIR /usr/local/src
+
+#install apr-1.6.2
+RUN  wget http://apache.fayea.com/apr/apr-1.6.2.tar.gz
+RUN  tar -zxf  apr-1.6.2.tar.gz
+WORKDIR  apr-1.6.2
+RUN   ./configure  --prefix=/usr/local/apr && make && make install
+WORKDIR /usr/local/src
+
+#install apr-util-1.6.0
+RUN  wget http://apache.fayea.com/apr/apr-util-1.6.0.tar.gz
+RUN tar -zxf apr-util-1.6.0.tar.gz
+WORKDIR  apr-util-1.6.0
+RUN   ./configure  --prefix=/usr/local/apr-util --with-apr=/usr/local/apr && make && make install
+
+WORKDIR  /usr/local/src
+
+#install httpd
+RUN wget  http://archive.apache.org/dist/httpd/httpd-2.3.8.tar.gz
+RUN tar -zxf httpd-2.3.8.tar.gz
+WORKDIR  httpd-2.3.8
+
+RUN   ./configure  --prefix=/usr/local/apache2  --enable-so  --enable-rewrite  --enable-ssl  --with-ssl=/usr/lib  --enable-auth-digest  --enable-cgi  --with-suexec-caller=daemon  --with-suexec-docroot=/usr/local/apache2/htdocs   --with-apr=/usr/local/apr   --with-apr-util=/usr/local/apr-util && make && make install
+
+EXPOSE 80
+
+RUN echo "/usr/local/apache2/bin/apachectl start" >> /etc/rc.local
+
+
+ 
+ 
