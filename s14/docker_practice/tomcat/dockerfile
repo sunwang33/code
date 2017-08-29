@@ -1,25 +1,48 @@
 FROM centos6_1:tiger
 MAINTAINER  sunwang sunwang1101@aliyun.com
 
-#install JDK1.6
+#install java7u80
 
-ADD	jdk-6u45-linux-x64.bin  /usr/local/src
-RUN mkdir  /java
-RUN mv  /usr/local/src/jdk-6u45-linux-x64.bin   /java
-WORKDIR  /java
-RUN chmod  700  jdk-6u45-linux-x64.bin
-RUN ./jdk-6u45-linux-x64.bin
-RUN echo "###java6u45###" >> /etc/profile
-RUN echo "JAVA_HOME=/java/jdk1.6.0_45/"  >> /etc/profile
-RUN echo "JAVA_BIN=/java/jdk1.6.0_45/bin"  >> /etc/profile
+RUN mkdir /usr/local/java/
+ADD jdk-7u80-linux-x64.tar.gz   /usr/local/java/
+WORKDIR /usr/local/java/
+RUN tar -zxf jdk-7u80-linux-x64.tar.gz 
+WORKDIR /usr/local/java/jdk1.7.0_80
+RUN ln -sf /usr/local/java/  /java
+RUN echo "###java7u80###" >> /etc/profile
+RUN echo "JAVA_HOME=/java/jdk1.7.0_80/"  >> /etc/profile
+RUN echo "JAVA_BIN=/java/jdk1.7.0_80/bin"  >> /etc/profile
 RUN echo "PATH=$PATH:$HOME/bin:$JAVA_HOME/bin"  >> /etc/profile
 RUN echo "CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar"  >> /etc/profile
 RUN echo "export JAVA_HOME JAVA_BIN PATH CLASSPATH"  >> /etc/profile
-RUN echo "###java6u45###" >> /etc/profile
+RUN echo "###java7u80###" >> /etc/profile
 RUN source /etc/profile
 
-ENV  JAVA_HOME   /java/jdk1.6.0_45/
-ENV  JAVA_BIN    /java/jdk1.6.0_45/bin
+ENV  JAVA_HOME   /java/jdk1.7.0_80/
+ENV  JAVA_BIN    /java/jdk1.7.0_80/bin
 ENV  PATH        $PATH:$HOME/bin:$JAVA_HOME/bin
 ENV	 CLASSPATH   .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 RUN		export JAVA_HOME JAVA_BIN PATH CLASSPATH
+
+#install tomcat7
+
+ADD http://mirror.bit.edu.cn/apache/tomcat/tomcat-7/v7.0.81/bin/apache-tomcat-7.0.81.tar.gz  /usr/local/src/
+RUN tar -zxf apache-tomcat-7.0.81.tar.gz  -C /usr/local/
+RUN ln -sf  /usr/local/apache-tomcat-7.0.81  /usr/local/tomcat
+RUN ln -sf  /usr/local/apache-tomcat-7.0.81/bin/startup.sh  /usr/bin/
+RUN ln -sf  /usr/local/apache-tomcat-7.0.81/bin/shutdown.sh  /usr/bin/
+RUN echo "###tomcat7###" >> /etc/profile
+RUN echo "JAVA_HOME=/java/jdk1.7.0_80/" >> /etc/profile
+RUN echo "CATALINA_HOME=/usr/local/tomcat" >> /etc/profile
+RUN echo "CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$CATALINA_HOME/lib/servlet-api.jar" >> /etc/profile
+RUN echo "PATH=$JAVA_HOME/bin:$PATH" >> /etc/profile
+RUN echo "export JAVA_HOME CATALINA_HOME CLASSPATH PATH" >> /etc/profile
+RUN source /etc/profile
+ENV JAVA_HOME /java/jdk1.7.0_80/
+ENV CATALINA_HOME /usr/local/tomcat
+ENV CLASSPATH   .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$CATALINA_HOME/lib/servlet-api.jar
+ENV PATH  $JAVA_HOME/bin:$PATH
+RUN export JAVA_HOME CATALINA_HOME CLASSPATH PATH
+WORKDIR /usr/local/tomcat/conf/
+RUN sed -i "/</tomcat-users>/ i\<user username="user" password="123456" roles="manager,admin"/>" tomcat-users.xml
+RUN echo "./startup.sh" >> /etc/rc.local
