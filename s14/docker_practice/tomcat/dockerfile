@@ -4,7 +4,7 @@ MAINTAINER  sunwang sunwang1101@aliyun.com
 #install java7u80
 
 RUN mkdir /usr/local/java/
-ADD jdk-7u80-linux-x64.tar.gz   /usr/local/java/
+COPY jdk-7u80-linux-x64.tar.gz   /usr/local/java/
 WORKDIR /usr/local/java/
 RUN tar -zxf jdk-7u80-linux-x64.tar.gz 
 WORKDIR /usr/local/java/jdk1.7.0_80
@@ -27,6 +27,7 @@ RUN		export JAVA_HOME JAVA_BIN PATH CLASSPATH
 #install tomcat7
 
 ADD http://mirror.bit.edu.cn/apache/tomcat/tomcat-7/v7.0.81/bin/apache-tomcat-7.0.81.tar.gz  /usr/local/src/
+WORKDIR   /usr/local/src/
 RUN tar -zxf apache-tomcat-7.0.81.tar.gz  -C /usr/local/
 RUN ln -sf  /usr/local/apache-tomcat-7.0.81  /usr/local/tomcat
 RUN ln -sf  /usr/local/apache-tomcat-7.0.81/bin/startup.sh  /usr/bin/
@@ -44,5 +45,5 @@ ENV CLASSPATH   .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$CATALINA_HOME/
 ENV PATH  $JAVA_HOME/bin:$PATH
 RUN export JAVA_HOME CATALINA_HOME CLASSPATH PATH
 WORKDIR /usr/local/tomcat/conf/
-RUN sed -i "/</tomcat-users>/ i\<user username="user" password="123456" roles="manager,admin"/>" tomcat-users.xml
+RUN sed -i "/<\/tomcat-users>/ i\<user username="user" password="123456" roles="manager,admin"/>" tomcat-users.xml
 RUN echo "./startup.sh" >> /etc/rc.local
