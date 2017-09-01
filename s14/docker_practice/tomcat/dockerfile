@@ -45,5 +45,6 @@ ENV CLASSPATH   .:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$CATALINA_HOME/
 ENV PATH  $JAVA_HOME/bin:$PATH
 RUN export JAVA_HOME CATALINA_HOME CLASSPATH PATH
 WORKDIR /usr/local/tomcat/conf/
-RUN sed -i "/<\/tomcat-users>/ i\<user username="user" password="123456" roles="manager,admin"/>" tomcat-users.xml
+RUN sed -i "/<\/tomcat-users>/ i\<role rolename="manager-gui"/>" tomcat-users.xml
+RUN sed -i "/<\/tomcat-users>/ i\<user username="tomcat" password="tomcat" roles="manager-gui,admin-gui"/>" tomcat-users.xml
 RUN echo "./startup.sh" >> /etc/rc.local
