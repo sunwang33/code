@@ -1,7 +1,21 @@
-__author__ = "sun wang"
-#print(all([1,-5,3]))
-#print(any([1,-5,3]))
-#print(any([0,-5,3]))
-#print(any([]))
-b=ascii([1,'a','你好'])
-print(type(b))
+# # # # __author__ = "sun wang"
+# # # # # #print(all([1,-5,3]))
+# # # # # #print(any([1,-5,3]))
+# # # # # #print(any([0,-5,3]))
+# # # # # #print(any([]))
+# # # # # b=ascii([1,'a','你好'])
+# # # # # print(type(b))
+# # # # #print([bin(2)])
+# # # # print (bool([1]))
+# # # # print (bool([0]))
+# # # # print (bool([]))
+# # # # a = bytes("abcde",encoding="utf-8")
+# # # # print (a.capitalize() , a)
+# # # b= bytearray("abcde",encoding="utf-8")
+# # # print (b[0])
+# # # b[1]=100
+# # # print (b)
+# # print (callable([]))
+# def sayhi():pass
+# # print(callable(sayhi))
+print (chr(97))
