@@ -1,0 +1,16 @@
+
+<Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000" jvmRoute="TomcatA"/>
+
+<Engine name="Catalina" defaultHost="web1.test.com">
+<Host name="web1.test.com"  appBase="/tomcat/webapps"
+            unpackWARs="true" autoDeploy="false">
+        <Context path="" docBase="/tomcat/webapps/web1" />
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="/naslog/$HOSTNAME/logs"
+               prefix="JYDCSTESTAP1_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+
+ </Host>
+ 
+ </Engine>
+ 
