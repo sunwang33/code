@@ -18,4 +18,5 @@
 # # print (callable([]))
 # def sayhi():pass
 # # print(callable(sayhi))
-print (chr(97))
+# print (chr(97))
+print (ord('d'))
