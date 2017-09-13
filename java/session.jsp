@@ -4,11 +4,11 @@
 		<title>Tomcat A</title>
 	</head>
 	<body>
-		<h1><font> color="blue">web1.jiuyingtec.com</font></h1>
+		<h1><font> color="blue">web1.test.com</font></h1>
 		<table align="centre" border="1">
 			<tr>
 					<td>Session ID</td>
-		<% session.setAttribute("jiuyingtec.com","jiuyingtec.com");%>
+		<% session.setAttribute("test.com","test.com");%>
 					<td><%=session.getId() %></td>
 			</tr>
 			<tr>
