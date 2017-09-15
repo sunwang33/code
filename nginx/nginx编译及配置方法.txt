@@ -1,0 +1,124 @@
+nginx编译安装
+
+
+
+#cd /usr/local/src
+
+去nginx.org官网去下载nginx.
+
+#wget  http://nginx.org/download/nginx-1.6.3.tar.gz
+
+#tar -zxvf nginx-1.6.3.tar.gz
+
+#cd  nginx-1.6.3
+
+#yum -y install  pcre-devel
+
+#./configure --prefix=/usr/lcoal/nginx  --with-pcre
+
+
+#make
+
+#make install
+
+#cd /usr/local/nginx
+
+#/usr/local/nginx/sbin/nginx
+//这个文件是可执行文件.直接使用这个命令就可以执行。
+
+
+
+#vim /usr/local/nginx/conf/nginx.conf
+user  guim;
+worker_processes  1;
+error_log /usr/local/nginx/logs/nginx_error.log crit;
+pid /usr/local/nginx/logs/nginx.pid;
+worker_rlimit_nofile 51200;
+events
+{
+    use epoll;
+    worker_connections 6000;
+}
+http {
+ include mime.types;
+    default_type application/octet-stream;
+    server_names_hash_bucket_size 3526;
+    server_names_hash_max_size 4096;
+    log_format combined_realip '$remote_addr $http_x_forwarded_for [$time_local]'
+    '$host "$request_uri" $status'
+    '"$http_referer" "$http_user_agent"';
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 30;
+    client_header_timeout 3m;
+    client_body_timeout 3m;
+    send_timeout 3m;
+    connection_pool_size 256;
+    client_header_buffer_size 1k;
+    large_client_header_buffers 8 4k;
+    request_pool_size 4k;
+    output_buffers 4 32k;
+    postpone_output 1460;
+    client_max_body_size 10m;
+    client_body_buffer_size 256k;
+    client_body_temp_path /usr/local/nginx/client_body_temp;
+    proxy_temp_path /usr/local/nginx/proxy_temp;
+    fastcgi_temp_path /usr/local/nginx/fastcgi_temp;
+    fastcgi_intercept_errors on;
+    tcp_nodelay on;
+    gzip on;
+    gzip_min_length 1k;
+    gzip_buffers 4 8k;
+    gzip_comp_level 5;
+    gzip_http_version 1.1;
+    gzip_types text/plain application/x-javascript text/css text/htm application/xml;
+    server {
+		listen 80;
+    		server_name localhost;
+    		index index.html index.htm index.php;
+    		root /usr/local/nginx/html;
+		location / {
+            	root   html;
+            	index  index.html index.htm index.php;
+        	}
+        	error_page   500 502 503 504  /50x.html;
+        	location = /50x.html {
+            	root   html;
+                }
+ 
+ 		location ~ \.php$ {
+            	root           html;                                 
+            	fastcgi_pass   127.0.0.1:9000;
+            	fastcgi_index  index.php;
+            	fastcgi_param  SCRIPT_FILENAME /usr/local/nginx/html$fastcgi_script_name;
+           	include        fastcgi_params;
+               }
+ }
+}
+
+：wq!
+
+在浏览器访问虚拟机IP,可以看到nginx的访问页面。
+
+这个默认的访问页面就是文件/usr/local/nginx/html/index.html
+ 
+ 
+
+ #/usr/local/nginx/sbin/nginx   -t
+ //测试配置文件语法问题。
+ 
+
+ 
+ #/usr/local/nginx/sbin/nginx  -s  reload
+ //重新加载配置文件
+ 
+ 
+在浏览器访问192.168.31.106/info.php,发现可以解析这个文件。
+
+# curl 192.168.31.106/info.php   -I
+HTTP/1.1 200 OK
+Server: nginx/1.6.3
+Date: Tue, 12 Jan 2016 15:12:58 GMT
+Content-Type: text/html
+Connection: keep-alive
+X-Powered-By: PHP/5.5.31
