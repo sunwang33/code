@@ -1,0 +1,17 @@
+#操作系统要求
+如需安装 Docker CE，您需要 64 位版本的 CentOS 7。
+#卸载旧版本
+Docker 的早期版本称为 docker 或 docker-engine。如果安装了这些版本，请卸载它们及关联的依赖资源。
+
+$ sudo yum remove docker \
+                  docker-common \
+                  docker-selinux \
+                  docker-engine
+使用镜像仓库进行安装
+首次在新的主机上安装 Docker CE 之前，您需要设置 Docker 镜像仓库。然后，您可以从此镜像仓库安装和更新 Docker。
+
+设置镜像仓库
+
+安装所需的软件包。yum-utils 提供了 yum-config-manager 实用程序，并且 devicemapper 存储驱动需要 device-mapper-persistent-data 和 lvm2。
+yum install -y yum-utils device-mapper-persistent-data lvm2
+
