@@ -5,12 +5,12 @@ class A:
         print("A")
 class B(A):
     pass
-    # def __init__(self):
-    #     print("B")
+    #def __init__(self):
+         #print("B")
 class C(A):
-    pass
-    # def __init__(self):
-    #     print("C")
+     pass
+     #def __init__(self):
+         #print("C")
 class D(B,C):
     pass
     # def __init__(self):
