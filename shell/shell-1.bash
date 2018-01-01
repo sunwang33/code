@@ -692,7 +692,7 @@ for i in {1..10}
    done
 echo $sum
 :wq!
-"for3.sh" [新] 7L, 81C 已写入                                                                                        
+                                                                                  
 [root@sunlocalhost shell]# chmod 700 !$
 chmod 700 for3.sh
 [root@sunlocalhost shell]# ./!$
@@ -1129,7 +1129,7 @@ EG1:
 #清除其中一个元素
 [root@sunlocalhost ~]# for  i in `seq 0 9`;do a[$i]=$RANDOM;done;echo ${a[@]}
 942 10873 28614 15556 29356 31869 32724 24324 11257 2924
-[root@sunlocalhost ~]# unset a[4]
+[root@sunlocalhost ~]# unset a[4]d
 [root@sunlocalhost ~]# echo ${a[*]}
 942 10873 28614 15556 31869 32724 24324 11257 2924
 

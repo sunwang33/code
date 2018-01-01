@@ -19,14 +19,14 @@ WORKDIR /usr/local/src
 RUN tar -zxf apr-util-1.6.0.tar.gz
 WORKDIR  apr-util-1.6.0
 RUN   ./configure  --prefix=/usr/local/apr-util --with-apr=/usr/local/apr && make && make install
-ADD  httpd-2.4.25.tar.gz   /usr/local/src
+
 WORKDIR  /usr/local/src
 
 #install httpd
 RUN tar -zxf httpd-2.4.25.tar.gz
 WORKDIR  httpd-2.4.25
 
-RUN   ./configure  --prefix=/usr/local/apache2  --with-apxs2=/usr/local/apache2/bin/apxs  --with-libxml-dir   --with-gd  --with-jpeg-dir  --with-png-dir --enable-so  --enable-rewrite  --enable-ssl  --with-ssl=/usr/lib  --enable-auth-digest  --enable-cgi  --with-freetype-dir  --with-iconv-dir --with-zlib-dir  --with-bz2 --with-openssl --with-mcrypt  --enable-soap  --enable-gd-native-ttf  --enable-mbstring  --enable-mbstring  --enable-sockets --enable-exif  --disable-ipv6 --enable-proxy-html  --enable-http --enable-proxy    --enable-proxy-ajp --enable-proxy-connect  --enable-proxy-http --enable-lbmethod-byrequests  --enable-proxy-balancer  --with-suexec-caller=daemon  --with-suexec-docroot=/usr/local/apache2/htdocs   --with-apr=/usr/local/apr   --with-apr-util=/usr/local/apr-util && make && make install
+RUN   ./configure  --prefix=/usr/local/apache2  --with-apxs2=/usr/local/apache2/bin/apxs  --with-libxml-dir   --with-gd  --with-jpeg-dir  --with-png-dir --enable-so  --enable-rewrite  --enable-ssl  --with-ssl=/usr/lib  --enable-auth-digest  --enable-cgi  --with-freetype-dir  --with-iconv-dir --with-zlib-dir  --with-bz2 --with-openssl --with-mcrypt  --enable-soap  --enable-gd-native-ttf  --enable-mbstring  --enable-mbstring  --enable-sockets --enable-exif  --disable-ipv6  --enable-http --enable-proxy    --enable-proxy-ajp --enable-proxy-connect  --enable-proxy-http --enable-lbmethod-byrequests  --enable-proxy-balancer  --with-suexec-caller=daemon  --with-suexec-docroot=/usr/local/apache2/htdocs   --with-apr=/usr/local/apr   --with-apr-util=/usr/local/apr-util && make && make install
 
 
 EXPOSE 80
